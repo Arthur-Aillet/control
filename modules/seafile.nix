@@ -106,7 +106,7 @@ in
       };
 
       seafile = {
-        image = "seafileltd/seafile-mc:${cfg.version}";
+        image = "seafileltd/seafile-mc:${cfg.version}-latest";
         ports = helpers.webServicePort config cfg 80;
         environment = {
           DB_HOST = "seafile-db";
