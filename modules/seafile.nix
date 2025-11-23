@@ -86,7 +86,7 @@ in
         environment = {
           MYSQL_ROOT_PASSWORD = cfg.dbRootPassword;
           MYSQL_LOG_CONSOLE = "false";
-          MARIADB_AUTO_UPGRADE=1;
+          MARIADB_AUTO_UPGRADE="1";
         };
         volumes = [
           "${cfg.paths.database}:/var/lib/mysql"
