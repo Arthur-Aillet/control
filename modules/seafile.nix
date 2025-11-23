@@ -2,6 +2,7 @@
   config,
   helpers,
   lib,
+  ...
 }:
 
 with lib;
