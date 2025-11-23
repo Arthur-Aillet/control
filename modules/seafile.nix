@@ -113,7 +113,7 @@ in
           DB_ROOT_PASSWD = cfg.dbRootPassword;
           INIT_SEAFILE_ADMIN_EMAIL = cfg.admin.email;
           INIT_SEAFILE_ADMIN_PASSWORD = cfg.admin.password;
-          TIME_ZONE = cfg.timeeone;
+          TIME_ZONE = cfg.timezone;
           SEAFILE_SERVER_PROTOCOL = "https";
           SEAFILE_SERVER_HOSTNAME =
             if config.control.routing.enable then
