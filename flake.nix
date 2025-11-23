@@ -29,6 +29,7 @@
         routing = mkModule ./modules/routing.nix;
         pihole = mkModule ./modules/pihole.nix;
         siyuan = mkModule ./modules/siyuan.nix;
+        seafile = mkModule ./modules/seafile.nix;
 
         default =
           { lib, ... }:
@@ -45,6 +46,7 @@
               self.nixosModules.routing
               self.nixosModules.pihole
               self.nixosModules.siyuan
+              self.nixosModules.seafile
             ];
 
             options.control = {
