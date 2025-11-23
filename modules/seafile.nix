@@ -96,13 +96,20 @@ in
         ];
       };
 
-      seafile-memcached = {
-        image = "memcached:1.6";
+      seafile-redis = {
+        image = "redis";
         extraOptions = [
           "--network=seafile-net"
           "--pull=always"
-          "--entrypoint=memcached -m 256"
         ];
+        cmd = [
+          "/bin/sh"
+          "-c"
+          ''redis-server --requirepass "$$REDIS_PASSWORD"''
+        ];
+        environment = {
+          REDIS_PASSWORD = "";
+        };
       };
 
       seafile = {
@@ -115,6 +122,8 @@ in
           INIT_SEAFILE_ADMIN_PASSWORD = cfg.admin.password;
           TIME_ZONE = cfg.timezone;
           SEAFILE_SERVER_PROTOCOL = "https";
+          CACHE_PROVIDER = "redis";
+          REDIS_HOST = "seafile-redis";
           SEAFILE_SERVER_HOSTNAME =
             if config.control.routing.enable then
               "${cfg.subdomain}.${config.control.routing.domain}"
