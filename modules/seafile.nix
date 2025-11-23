@@ -86,6 +86,7 @@ in
         environment = {
           MYSQL_ROOT_PASSWORD = cfg.dbRootPassword;
           MYSQL_LOG_CONSOLE = "false";
+          MARIADB_AUTO_UPGRADE=1;
         };
         volumes = [
           "${cfg.paths.database}:/var/lib/mysql"
@@ -116,8 +117,9 @@ in
         image = "seafileltd/seafile-mc:${cfg.version}-latest";
         ports = helpers.webServicePort config cfg 80;
         environment = {
-          DB_HOST = "seafile-db";
-          DB_ROOT_PASSWD = cfg.dbRootPassword;
+          SEAFILE_MYSQL_DB_HOST = "seafile-db";
+          SEAFILE_MYSQL_DB_USER = "seafile";
+          SEAFILE_MYSQL_DB_PASSWORD = cfg.dbRootPassword;
           INIT_SEAFILE_ADMIN_EMAIL = cfg.admin.email;
           INIT_SEAFILE_ADMIN_PASSWORD = cfg.admin.password;
           TIME_ZONE = cfg.timezone;
