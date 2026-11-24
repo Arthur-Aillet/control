@@ -1,39 +1,47 @@
-{ config, pkgs, lib, helpers, ... }:
-with lib;
-let cfg = config.control.picard;
+{
+  config,
+  pkgs,
+  lib,
+  helpers,
+  ...
+}:
+with lib; let
+  cfg = config.control.picard;
 in {
-  options.control.picard = (helpers.webServiceDefaults {
-    name = "picard";
-    version = "latest";
-    subdomain = "picard";
-    port = 10014;
-  }) // {
-    paths = {
-      default = helpers.mkInheritedPathOption {
-        parentName = "home server global default path";
-        parent = config.control.defaultPath;
-        defaultSubpath = "picard";
-        description = "Root path for picard media and appdata";
+  options.control.picard =
+    (helpers.webServiceDefaults {
+      name = "picard";
+      version = "latest";
+      subdomain = "picard";
+      port = 10014;
+    })
+    // {
+      paths = {
+        default = helpers.mkInheritedPathOption {
+          parentName = "home server global default path";
+          parent = config.control.defaultPath;
+          defaultSubpath = "picard";
+          description = "Root path for picard media and appdata";
+        };
+
+        directories = lib.mkOption {
+          type = with types; attrsOf path;
+          default = {"config" = cfg.paths.default + "/config";};
+          defaultText = ''{config = paths.default + "/config";}'';
+          description = ''
+            List of mountpoints giving data to the picard container.
+            Will be mounted under /<name> in the container.
+          '';
+        };
       };
 
-      directories = lib.mkOption {
-        type = with types; attrsOf path;
-        default = { "config" = cfg.paths.default + "/config"; };
-        defaultText = ''{config = paths.default + "/config";}'';
-        description = ''
-          List of mountpoints giving data to the picard container.
-          Will be mounted under /<name> in the container.
-        '';
+      configuration = lib.mkOption {
+        type = with types; attrsOf str;
+        default = {};
+        defaultText = "{ }";
+        description = "Passed as environment to picard. See picard(docker) docs";
       };
     };
-
-    configuration = lib.mkOption {
-      type = with types; attrsOf str;
-      default = { };
-      defaultText = "{ }";
-      description = "Passed as environment to picard. See picard(docker) docs";
-    };
-  };
 
   config = mkIf cfg.enable {
     virtualisation.docker.enable = true;
@@ -43,14 +51,14 @@ in {
       isNormalUser = true;
       uid = 1095;
       group = "music";
-      extraGroups = [ "docker" "users" ];
+      extraGroups = ["docker" "users"];
     };
 
     virtualisation.oci-containers.containers = {
       picard = {
         image = "mikenye/picard:${cfg.version}";
         ports = helpers.webServicePort config cfg 5800;
-        extraOptions = [ "--pull=always" ];
+        extraOptions = [];
         environment = mkMerge [
           cfg.configuration
           {
@@ -65,4 +73,3 @@ in {
     };
   };
 }
-
